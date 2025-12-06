@@ -130,8 +130,9 @@ function LocationDetail() {
                 <p><strong>Date:</strong> {event.date}</p>
                 <p><strong>Presenter:</strong> {event.presenter}</p>
                 {event.description && (
-                  <p className="event-description">{event.description.substring(0, 150)}...</p>
-                )}
+                  <p className="event-description"><strong>Description: </strong>{event.description.substring(0, 2000)}</p>
+                )} 
+                <br />
               </div>
             ))}
           </div>
