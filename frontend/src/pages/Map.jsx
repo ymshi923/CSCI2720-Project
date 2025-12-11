@@ -51,7 +51,7 @@ function Map() {
       {error && <div className="error-message">{error}</div>}
 
       <div style={{ height: '600px', borderRadius: '8px', overflow: 'hidden' }}>
-        <MapContainer center={[centerLat, centerLng]} zoom={11} style={{ height: '100%', width: '100%' }}>
+        <MapContainer center={[userLat || 22.3, userLng || 114.2]} zoom={12} scrollWheelZoom={false}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -65,7 +65,7 @@ function Map() {
                   <button
                     onClick={() => navigate(`/location/${location._id}`)}
                     className="btn-primary"
-                    style={{ marginTop: '10px' }}
+                    style={{ marginTop: '10px' }} 
                   >
                     View Details
                   </button>
