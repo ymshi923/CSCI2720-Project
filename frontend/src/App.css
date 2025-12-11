@@ -98,6 +98,22 @@ body {
   text-align: center;
 }
 
+.navbar {
+  position: sticky;  
+  top: 0;
+  z-index: 2000 !important;
+}
+
+/* Force Leaflet map layers to stay BELOW navbar */
+.leaflet-container,
+.leaflet-pane,
+.leaflet-map-pane,
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control {
+  z-index: 0 !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .page {

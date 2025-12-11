@@ -246,12 +246,6 @@
     <latitude><![CDATA[22.29386]]></latitude>
     <longitude><![CDATA[114.17053]]></longitude>
   </venue>
-  <venue id="50111647">
-    <venuec><![CDATA[香港文化中心 (露天廣場C區)]]></venuec>
-    <venuee><![CDATA[Hong Kong Cultural Centre (Piazza C)]]></venuee>
-    <latitude><![CDATA[22.29386]]></latitude>
-    <longitude><![CDATA[114.17053]]></longitude>
-  </venue>
   <venue id="53">
     <venuec><![CDATA[香港仔公共圖書館]]></venuec>
     <venuee><![CDATA[Aberdeen Public Library]]></venuee>
@@ -393,6 +387,12 @@
   <venue id="72">
     <venuec><![CDATA[梅窩公共圖書館]]></venuec>
     <venuee><![CDATA[Mui Wo Public Library]]></venuee>
+    <latitude />
+    <longitude />
+  </venue>
+  <venue id="7203">
+    <venuec><![CDATA[尚德廣場十二生肖(廣場)]]></venuec>
+    <venuee><![CDATA[G/F, Sheung Tak (Plaza)]]></venuee>
     <latitude />
     <longitude />
   </venue>
@@ -630,12 +630,6 @@
     <latitude />
     <longitude />
   </venue>
-  <venue id="8333">
-    <venuec><![CDATA[南區區內場地]]></venuec>
-    <venuee><![CDATA[Venues in Southern district]]></venuee>
-    <latitude />
-    <longitude />
-  </venue>
   <venue id="8336">
     <venuec><![CDATA[觀塘區內場地]]></venuec>
     <venuee><![CDATA[Venues in Kwun Tong district]]></venuee>
@@ -663,18 +657,6 @@
   <venue id="8340">
     <venuec><![CDATA[離島區內場地]]></venuec>
     <venuee><![CDATA[Venues in Islands district]]></venuee>
-    <latitude />
-    <longitude />
-  </venue>
-  <venue id="8342">
-    <venuec><![CDATA[北區區內場地]]></venuec>
-    <venuee><![CDATA[Venues in North district]]></venuee>
-    <latitude />
-    <longitude />
-  </venue>
-  <venue id="8344">
-    <venuec><![CDATA[沙田區內場地]]></venuec>
-    <venuee><![CDATA[Venues in Sha Tin district]]></venuee>
     <latitude />
     <longitude />
   </venue>
@@ -723,6 +705,12 @@
   <venue id="87110023">
     <venuec><![CDATA[葵青劇院 (演藝廳)]]></venuec>
     <venuee><![CDATA[Kwai Tsing Theatre (Auditorium)]]></venuee>
+    <latitude><![CDATA[22.35665]]></latitude>
+    <longitude><![CDATA[114.12623]]></longitude>
+  </venue>
+  <venue id="87112562">
+    <venuec><![CDATA[葵青劇院 (黑盒劇場)]]></venuec>
+    <venuee><![CDATA[Kwai Tsing Theatre (Black Box Theatre)]]></venuee>
     <latitude><![CDATA[22.35665]]></latitude>
     <longitude><![CDATA[114.12623]]></longitude>
   </venue>
@@ -821,12 +809,6 @@
     <venuee><![CDATA[Ko Shan Theatre (New Wing Auditorium)]]></venuee>
     <latitude><![CDATA[22.31368]]></latitude>
     <longitude><![CDATA[114.18556]]></longitude>
-  </venue>
-  <venue id="87710033">
-    <venuec><![CDATA[西灣河文娛中心 (文娛廳)]]></venuec>
-    <venuee><![CDATA[Sai Wan Ho Civic Centre (Cultural Activities Hall)]]></venuee>
-    <latitude><![CDATA[22.2818]]></latitude>
-    <longitude><![CDATA[114.222501]]></longitude>
   </venue>
   <venue id="87710034">
     <venuec><![CDATA[西灣河文娛中心 (劇院)]]></venuec>

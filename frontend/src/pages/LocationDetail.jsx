@@ -108,7 +108,24 @@ function LocationDetail() {
         </div>
 
         <div className="map-container">
-          <MapContainer center={[location.latitude, location.longitude]} zoom={14} style={{ height: '100%', width: '100%' }}>
+          <MapContainer
+            center={[location.latitude, location.longitude]}
+            zoom={16}
+            scrollWheelZoom={false}
+            dragging={false}
+            doubleClickZoom={false}
+            touchZoom={false}
+            boxZoom={false}
+            keyboard={false}
+            zoomControl={false}
+            style={{
+              height: '300px',
+              width: '100%',
+              borderRadius: '8px',
+              overflow: 'hidden'
+            }}
+          >
+
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
