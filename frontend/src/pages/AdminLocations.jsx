@@ -8,7 +8,14 @@ function AdminLocations() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editingLocation, setEditingLocation] = useState(null);
   const [formData, setFormData] = useState({
+    venueId: '',
+    name: '',
+    latitude: '',
+    longitude: ''
+  });
+  const [editForm, setEditForm] = useState({
     venueId: '',
     name: '',
     latitude: '',
@@ -75,6 +82,37 @@ function AdminLocations() {
       } catch (err) {
         setError('Failed to delete location');
       }
+    }
+  };
+
+  const handleEditLocation = (location) => {
+    setEditingLocation(location);
+    setEditForm({
+      venueId: location.venueId || '',
+      name: location.name || '',
+      latitude: location.latitude?.toString() || '',
+      longitude: location.longitude?.toString() || ''
+    });
+  };
+
+  const handleUpdateLocation = async (e) => {
+    e.preventDefault();
+    if (!editingLocation) return;
+
+    try {
+      await adminAPI.locations.update(editingLocation._id, {
+        venueId: editForm.venueId,
+        name: editForm.name,
+        latitude: parseFloat(editForm.latitude),
+        longitude: parseFloat(editForm.longitude)
+      });
+      setSuccess('Location updated successfully');
+      setEditingLocation(null);
+      setEditForm({ venueId: '', name: '', latitude: '', longitude: '' });
+      fetchLocations();
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to update location');
     }
   };
 
@@ -152,6 +190,72 @@ function AdminLocations() {
         </form>
       )}
 
+      {editingLocation && (
+        <form className="admin-form" onSubmit={handleUpdateLocation}>
+          <h2>Edit Location</h2>
+
+          <div className="form-group">
+            <label>Venue ID:</label>
+            <input
+              type="text"
+              name="venueId"
+              value={editForm.venueId}
+              onChange={(e) => setEditForm(prev => ({ ...prev, venueId: e.target.value }))}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Venue Name:</label>
+            <input
+              type="text"
+              name="name"
+              value={editForm.name}
+              onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Latitude:</label>
+            <input
+              type="number"
+              name="latitude"
+              value={editForm.latitude}
+              onChange={(e) => setEditForm(prev => ({ ...prev, latitude: e.target.value }))}
+              step="any"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Longitude:</label>
+            <input
+              type="number"
+              name="longitude"
+              value={editForm.longitude}
+              onChange={(e) => setEditForm(prev => ({ ...prev, longitude: e.target.value }))}
+              step="any"
+              required
+            />
+          </div>
+
+          <div className="form-buttons">
+            <button type="submit" className="btn-primary">Save Changes</button>
+            <button
+              type="button"
+              className="btn-cancel"
+              onClick={() => {
+                setEditingLocation(null);
+                setEditForm({ venueId: '', name: '', latitude: '', longitude: '' });
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+
       <div className="admin-table-container">
         <h2>All Locations ({locations.length})</h2>
         {locations.length === 0 ? (
@@ -175,11 +279,18 @@ function AdminLocations() {
                   <td>{location.latitude}</td>
                   <td>{location.longitude}</td>
                   <td>
+                    <button
+                      className="btn-secondary"
+                      onClick={() => handleEditLocation(location)}
+                      style={{ marginRight: '8px' }}
+                    >
+                       Edit
+                    </button>
                     <button 
                       className="btn-delete" 
                       onClick={() => handleDeleteLocation(location._id)}
                     >
-                      🗑️ Delete
+                      Delete
                     </button>
                   </td>
                 </tr>

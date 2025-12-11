@@ -51,7 +51,19 @@ function Map() {
       {error && <div className="error-message">{error}</div>}
 
       <div style={{ height: '600px', borderRadius: '8px', overflow: 'hidden' }}>
-        <MapContainer center={[userLat || 22.3, userLng || 114.2]} zoom={12} scrollWheelZoom={false}>
+        <MapContainer
+          center={[userLat || 22.3, userLng || 114.2]}
+          zoom={12}
+          scrollWheelZoom={false}
+          dragging={false}
+          doubleClickZoom={false}
+          touchZoom={false}
+          boxZoom={false}
+          keyboard={false}
+          zoomControl={false}
+          style={{ height: '70vh', borderRadius: '8px', overflow: 'hidden' }}
+        >
+
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

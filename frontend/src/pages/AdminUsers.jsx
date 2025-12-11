@@ -8,7 +8,13 @@ function AdminUsers() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    role: 'user'
+  });
+  const [editForm, setEditForm] = useState({
     username: '',
     password: '',
     role: 'user'
@@ -55,6 +61,39 @@ function AdminUsers() {
       } catch (err) {
         setError('Failed to delete user');
       }
+    }
+  };
+
+  const handleEditUser = (user) => {
+    setEditingUser(user);
+    setEditForm({
+      username: user.username,
+      password: '',
+      role: user.role
+    });
+  };
+
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    if (!editingUser) return;
+
+    const payload = {
+      username: editForm.username,
+      role: editForm.role
+    };
+    if (editForm.password) {
+      payload.password = editForm.password;
+    }
+
+    try {
+      await adminAPI.users.update(editingUser._id, payload);
+      setSuccess('User updated successfully');
+      setEditingUser(null);
+      setEditForm({ username: '', password: '', role: 'user' });
+      fetchUsers();
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to update user');
     }
   };
 
@@ -108,6 +147,53 @@ function AdminUsers() {
         </form>
       )}
 
+      {editingUser && (
+        <form onSubmit={handleUpdateUser} className="admin-form">
+          <h2>Edit User</h2>
+          <div className="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              value={editForm.username}
+              onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>New Password (leave blank to keep current)</label>
+            <input
+              type="password"
+              value={editForm.password}
+              onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
+              placeholder="Optional"
+            />
+          </div>
+          <div className="form-group">
+            <label>Role</label>
+            <select
+              value={editForm.role}
+              onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div className="form-actions">
+            <button type="submit" className="btn-primary">Save Changes</button>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => {
+                setEditingUser(null);
+                setEditForm({ username: '', password: '', role: 'user' });
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+
       <div className="users-table">
         <table>
           <thead>
@@ -125,6 +211,13 @@ function AdminUsers() {
                 <td>{user.role}</td>
                 <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                 <td>
+                  <button
+                    onClick={() => handleEditUser(user)}
+                    className="btn-secondary"
+                    style={{ marginRight: '8px' }}
+                  >
+                    Edit
+                  </button>
                   <button
                     onClick={() => handleDeleteUser(user._id)}
                     className="btn-delete"
