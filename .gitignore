@@ -1,0 +1,70 @@
+# Node
+node_modules/
+
+# Backend and frontend node_modules
+/backend/node_modules/
+/frontend/node_modules/
+
+# Build outputs
+/dist/
+build/
+/frontend/dist/
+
+# Vite cache
+/.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# Environment files (keep example files)
+.env
+.env.*
+!.env.example
+!.env.*.example
+backend/.env
+frontend/.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Testing
+coverage/
+.nyc_output/
+jest-cache/
+.vitest/
+
+# Misc
+.cache/
+*.tgz
+*.zip
+*.tar.gz
+
+# Docker
+docker-compose.override.yml
+
+# Optional: local database files
+data/db/
+
+# Ignore runtime files
+pids/
+*.pid
+*.seed
+
+# Ignore compiled files
+*.tsbuildinfo
+
+# Keep package-lock (do not ignore lockfiles) intentionally
