@@ -149,6 +149,79 @@ router.delete('/locations/:id', auth, adminAuth, async (req, res) => {
   }
 });
 
+// Admin: Get all events
+router.get('/events', auth, adminAuth, async (req, res) => {
+  try {
+    const events = await Event.find().populate('locationId', 'name venueId');
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin: Create event
+router.post('/events', auth, adminAuth, async (req, res) => {
+  try {
+    const { locationId, title, date, description, presenter, price, ageLimit, url } = req.body;
+    
+    if (!locationId || !title || !date) {
+      return res.status(400).json({ error: 'Location, title and date are required' });
+    }
+    
+    // Check if location exists
+    const location = await Location.findById(locationId);
+    if (!location) {
+      return res.status(404).json({ error: 'Location not found' });
+    }
+    
+    const event = new Event({
+      locationId,
+      title,
+      date,
+      description,
+      presenter,
+      price: price || 'Free',
+      ageLimit: ageLimit || 'All ages',
+      url: url || ''
+    });
+    
+    await event.save();
+    res.status(201).json(event);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin: Update event
+router.put('/events/:id', auth, adminAuth, async (req, res) => {
+  try {
+    const event = await Event.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true }
+    );
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+    res.json(event);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Admin: Delete event
+router.delete('/events/:id', auth, adminAuth, async (req, res) => {
+  try {
+    const event = await Event.findByIdAndDelete(req.params.id);
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+    res.json({ message: 'Event deleted' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Admin: Dashboard stats
 router.get('/stats', auth, adminAuth, async (req, res) => {
   try {
