@@ -8,6 +8,7 @@ import Locations from './pages/Locations';
 import LocationDetail from './pages/LocationDetail';
 import Map from './pages/Map';
 import Favorites from './pages/Favorites';
+import RandomEventPage from './pages/RandomEventPage';
 import Admin from './pages/Admin';
 import AdminUsers from './pages/AdminUsers';
 import AdminLocations from './pages/AdminLocations';
@@ -79,6 +80,7 @@ function App() {
               <Route path="/location/:id" element={<LocationDetail />} />
               <Route path="/map" element={<Map />} />
               <Route path="/favorites" element={<Favorites />} />
+              <Route path="/random" element={<RandomEventPage />} />
               
               {user.role === 'admin' && (
                 <>
