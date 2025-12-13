@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { locationsAPI } from '../services/api';
 import FilterPanel from '../components/FilterPanel';
-import LocationCard from '../components/LocationCard';
 import '../styles/pages.css';
 
 function Locations() {
@@ -13,9 +12,37 @@ function Locations() {
   const [sort, setSort] = useState('name');
   const [userLat, setUserLat] = useState(22.3);
   const [userLng, setUserLng] = useState(114.2);
+  const [locationLoading, setLocationLoading] = useState(false);
 
   useEffect(() => {
-    fetchLocations();
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        setLocationLoading(true);
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setUserLat(position.coords.latitude);
+            setUserLng(position.coords.longitude);
+            setLocationLoading(false);
+            fetchLocations();
+          },
+          (error) => {
+            console.error("Failed to get location:", error);
+            setLocationLoading(false);
+            fetchLocations();
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          }
+        );
+      } else {
+        console.log("Geolocation not supported by browser");
+        fetchLocations();
+      }
+    };
+    
+    getUserLocation();
   }, [sort]);
 
   const fetchLocations = async () => {
@@ -39,7 +66,20 @@ function Locations() {
     setFilteredLocations(filtered);
   };
 
-  if (loading) return <div className="loading">Loading locations...</div>;
+  const calculateDistance = (lat, lng) => {
+    const R = 6371; 
+    const dLat = (lat - userLat) * Math.PI / 180;
+    const dLon = (lng - userLng) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(userLat * Math.PI / 180) * Math.cos(lat * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+    return distance.toFixed(2); 
+  };
+
+  if (loading || locationLoading) return <div className="loading">Loading locations...</div>;
 
   return (
     <div className="page">
@@ -59,29 +99,61 @@ function Locations() {
 
         <div className="locations-view">
           <div className="view-controls">
-            <select value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="name">Sort by Name</option>
-              <option value="distance">Sort by Distance</option>
-              <option value="events">Sort by Events</option>
-            </select>
-            <p>{filteredLocations.length} venues found</p>
+            <div className="sort-control">
+              <label>Sort by: </label>
+              <select value={sort} onChange={(e) => setSort(e.target.value)}>
+                <option value="name">Location Name</option>
+                <option value="distance">Distance (km)</option>
+                <option value="events">Number of Events</option>
+              </select>
+            </div>
+            <p className="results-count">{filteredLocations.length} venues found</p>
           </div>
 
           {error && <div className="error-message">{error}</div>}
 
-          <div className="locations-list">
-            {filteredLocations.map(location => (
-              <Link key={location._id} to={`/location/${location._id}`}>
-                <LocationCard location={location} />
-              </Link>
-            ))}
-          </div>
+          <div className="table-container">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>LOCATION</th>
+                  <th>DISTANCE (KM)</th>
+                  <th>NUMBER OF EVENTS</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredLocations.map(location => (
+                  <tr key={location._id}>
+                    <td>{location.venueId}</td>
+                    <td>
+                      <Link to={`/location/${location._id}`} className="table-link">
+                        {location.name}
+                      </Link>
+                    </td>
+                    <td>{calculateDistance(location.latitude, location.longitude)} km</td>
+                    <td>{location.eventCount}</td>
+                    <td>
+                      <Link to={`/location/${location._id}`} className="btn-view">
+                        View Details
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-          {filteredLocations.length === 0 && (
-            <div className="empty-state">
-              <p>No venues found matching your criteria.</p>
+            {filteredLocations.length === 0 && (
+              <div className="empty-state">
+                <p>No venues found matching your criteria.</p>
+              </div>
+            )}
+
+            <div className="last-updated">
+              <p>Last updated time: {new Date().toLocaleDateString('en-GB')}, {new Date().toLocaleTimeString('en-GB')}</p>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
