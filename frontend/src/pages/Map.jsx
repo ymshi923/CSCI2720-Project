@@ -52,18 +52,13 @@ function Map() {
 
       <div style={{ height: '600px', borderRadius: '8px', overflow: 'hidden' }}>
         <MapContainer
-          center={[userLat || 22.3, userLng || 114.2]}
+          center={[centerLat, centerLng]}
           zoom={12}
-          scrollWheelZoom={false}
-          dragging={false}
-          doubleClickZoom={false}
-          touchZoom={false}
-          boxZoom={false}
-          keyboard={false}
-          zoomControl={false}
-          style={{ height: '70vh', borderRadius: '8px', overflow: 'hidden' }}
+          style={{ height: '70vh', borderRadius: '8px' }}
+          scrollWheelZoom={true}
+          dragging={true}
+          zoomControl={true}
         >
-
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -77,7 +72,7 @@ function Map() {
                   <button
                     onClick={() => navigate(`/location/${location._id}`)}
                     className="btn-primary"
-                    style={{ marginTop: '10px' }} 
+                    style={{ marginTop: '10px' }}
                   >
                     View Details
                   </button>
