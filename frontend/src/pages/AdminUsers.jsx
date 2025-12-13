@@ -179,10 +179,10 @@ function AdminUsers() {
             </select>
           </div>
           <div className="form-actions">
-            <button type="submit" className="btn-primary">Save Changes</button>
+            <button type="submit" className="btn-secondary" style= {{height: '25px', width: '150px'}}>Save Changes</button>
             <button
               type="button"
-              className="btn-secondary"
+              className="btn-delete"
               onClick={() => {
                 setEditingUser(null);
                 setEditForm({ username: '', password: '', role: 'user' });
@@ -235,3 +235,4 @@ function AdminUsers() {
 }
 
 export default AdminUsers;
+
