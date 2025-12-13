@@ -126,7 +126,7 @@ function AdminLocations() {
       {success && <div className="success-message">{success}</div>}
 
       {!showForm ? (
-        <button className="btn-add" onClick={() => setShowForm(true)}>
+        <button className="btn-primary" onClick={() => setShowForm(true)}>
           ➕ Add New Location
         </button>
       ) : (
