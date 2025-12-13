@@ -22,10 +22,12 @@ docker run --name csci2720-mongo -p 27017:27017 -d mongo:6.0
 
 ```bash
 cd backend
-npm install
+npm init -y
+npm install express mongoose cors dotenv bcryptjs jsonwebtoken
+npm install --save-dev nodemon
 ```
 
-2. Create environment file `backend/.env` (example):
+2. Create environment file `backend/.env` (a default file .env is provided):
 
 ```env
 MONGODB_URI=mongodb://localhost:27017/cultural-events
@@ -65,6 +67,7 @@ The database connection code (`backend/config/db.js`) automatically seeds an adm
 ```bash
 cd frontend
 npm install
+npm install axios react-router-dom leaflet react-leaflet
 ```
 
 2. Run dev server
@@ -82,6 +85,7 @@ Vite will print the local URL (commonly `http://localhost:5173`). The frontend c
 - `POST /api/auth/login` — login (returns JWT)
 - `GET /api/locations` — list venues
 - `GET /api/locations/:id` — venue details
+- `GET /api/random/pick` — random event page
 - `GET /api/events` — list events
 - `POST /api/comments` — add comment (authenticated)
 - `GET /api/favorites` — user favorites (authenticated)
