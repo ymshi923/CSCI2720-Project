@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { favoritesAPI } from '../services/api';
-import LocationCard from '../components/LocationCard';
 import '../styles/pages.css';
 
 function Favorites() {
@@ -17,10 +16,19 @@ function Favorites() {
     try {
       setLoading(true);
       const response = await favoritesAPI.getAll();
-      setFavorites(response.data);
+      
+      const favoritesData = response.data?.favorites || 
+                           response.data?.locations || 
+                           response.data || 
+                           [];
+      
+      const validFavorites = Array.isArray(favoritesData) 
+        ? favoritesData.filter(item => item && (item._id || item.location?._id || item.id))
+        : [];
+      
+      setFavorites(validFavorites);
     } catch (err) {
       setError('Failed to load favorites');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -29,9 +37,13 @@ function Favorites() {
   const handleRemove = async (locationId) => {
     try {
       await favoritesAPI.remove(locationId);
-      setFavorites(favorites.filter(fav => fav._id !== locationId));
+      setFavorites(favorites.filter(fav => {
+        if (!fav) return false;
+        const loc = fav.location || fav;
+        return loc._id !== locationId && loc.id !== locationId;
+      }));
     } catch (err) {
-      console.error('Error removing favorite:', err);
+      setError('Failed to remove favorite');
     }
   };
 
@@ -44,25 +56,77 @@ function Favorites() {
       {error && <div className="error-message">{error}</div>}
 
       {favorites.length > 0 ? (
-        <div className="locations-list">
-          {favorites.map(location => (
-            <div key={location._id} className="favorite-item">
-              <Link to={`/location/${location._id}`}>
-                <LocationCard location={location} />
-              </Link>
-              <button
-                onClick={() => handleRemove(location._id)}
-                className="btn-remove"
-              >
-                Remove from Favorites
-              </button>
-            </div>
-          ))}
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>LOCATION</th>
+                <th>NUMBER OF EVENTS</th>
+                <th>REMOVE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {favorites.map((fav, index) => {
+                if (!fav) return null;
+                
+                const location = fav.location || fav;
+                if (!location) return null;
+                
+                const locationId = location._id || location.id || index;
+                const locationName = location.name || 'Unknown Venue';
+                
+                return (
+                  <tr key={locationId}>
+                    <td>
+                      <Link 
+                        to={`/location/${locationId}`}
+                        style={{ color: 'var(--primary-color)', fontWeight: 'bold', textDecoration: 'none', fontSize: '18px'}}
+                      >
+                        {locationName}
+                      </Link>
+                    </td>
+                    <td style={{fontSize: '16px' }}>
+                      {location.eventCount || 0}
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => handleRemove(locationId)}
+                        style={{
+                          backgroundColor: '#e74c3c',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 16px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '18px',
+                          width: '100%'
+                        }}
+                      >
+                        Remove ❤️
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       ) : (
-        <div className="empty-state">
-          <p>You haven't added any favorite venues yet.</p>
-          <Link to="/locations" className="btn-primary">
+        <div style={{ textAlign: 'center', padding: '50px' }}>
+          <p style={{ fontSize: '18px', marginBottom: '20px', color: '#666' }}>
+            You haven't added any favorite venues yet.
+          </p>
+          <Link 
+            to="/locations" 
+            style={{
+              backgroundColor: 'var(--primary-color)',
+              color: 'white',
+              padding: '10px 20px',
+              borderRadius: '4px',
+              textDecoration: 'none',
+              display: 'inline-block'
+            }}
+          >
             Explore Venues
           </Link>
         </div>
