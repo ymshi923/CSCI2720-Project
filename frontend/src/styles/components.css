@@ -234,13 +234,150 @@ html[data-theme="dark"] .comment-text {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.85rem;
-  transition: background 0.3s;
+  transition: 0.3s;
 }
 
 .comment-delete:hover {
   background: #c0392b;
 }
 
+.comment-section p {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+  font-style: italic;
+}
+
+html[data-theme="dark"] .comment-section p {
+  color: #aaa;
+}
+
+/*FIlter*/
+.filter-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  margin-right: 20px;
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.filter-panel h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.filter-group {
+  margin-bottom: 18px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: #555;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.filter-group input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.filter-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.filter-group input::placeholder {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.filter-panel button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.filter-panel .btn-secondary {
+  background: #c8d9eb;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.filter-panel .btn-secondary:hover {
+  background: #f1f5f9;
+}
+
+/* Distance Slider Styles */
+.distance-slider-container {
+  margin: 10px 0 15px 0;
+}
+
+.distance-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #e0e0e0;
+  outline: none;
+  margin: 10px 0;
+}
+
+html[data-theme="dark"] .distance-slider {
+  background: #444;
+}
+
+.distance-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #2b9b7a;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.distance-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #2b9b7a;
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Distance display text */
+.distance-display {
+  margin: 5px 0 0 0;
+  font-size: 0.9rem;
+  color: #555;
+  text-align: center;
+  padding: 5px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+html[data-theme="dark"] .distance-display {
+  color: #ccc;
+  background: #3a3a3a;
+}
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .navbar {
