@@ -82,7 +82,7 @@ function LocationDetail() {
 
       <div className="location-detail">
         <div className="location-info">
-          <h1>{location.name}</h1>
+          <h2>{location.name}</h2>
           <p className="venue-id">📍 Venue ID: {location.venueId}</p>
           <p className="event-count">🎭 {location.eventCount} events</p>
 
@@ -125,7 +125,6 @@ function LocationDetail() {
               overflow: 'hidden'
             }}
           >
-
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -137,24 +136,63 @@ function LocationDetail() {
         </div>
       </div>
 
-      <div className="events-list">
+      <div className="events-table-container">
         <h2>🎭 Events at {location.name}</h2>
         {events.length > 0 ? (
-          <div className="events-grid">
-            {events.map(event => (
-              <div key={event._id} className="event-item">
-                <h3>{event.title}</h3>
-                <p><strong>Date:</strong> {event.date}</p>
-                <p><strong>Presenter:</strong> {event.presenter}</p>
-                {event.description && (
-                  <p className="event-description"><strong>Description: </strong>{event.description.substring(0, 2000)}</p>
-                )} 
-                <br />
-              </div>
-            ))}
+          <div className="table-responsive">
+            <table className="events-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Date</th>
+                  <th>Presenter</th>
+                  <th>Description</th>
+                  <th>Price</th>
+                  <th>Age Limit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.map(event => (
+                  <tr key={event._id} className="event-row">
+                    <td className="event-title">{event.title}</td>
+                    <td className="event-date">{event.date}</td>
+                    <td className="event-presenter">{event.presenter || '-'}</td>
+                    <td className="event-description">
+                      {event.description ? (
+                        <div className="description-container">
+                          {event.description.length > 100 ? (
+                            <>
+                              {event.description.substring(0, 100)}...
+                              <span className="show-more-btn" onClick={() => {
+                                const descElement = document.querySelector(`#desc-${event._id}`);
+                                if (descElement) {
+                                  descElement.textContent = event.description;
+                                  descElement.parentElement.querySelector('.show-more-btn').style.display = 'none';
+                                  descElement.parentElement.querySelector('.show-less-btn').style.display = 'inline';
+                                }
+                              }}>Show more</span>
+                              <span className="show-less-btn" style={{display: 'none'}} onClick={() => {
+                                const descElement = document.querySelector(`#desc-${event._id}`);
+                                if (descElement) {
+                                  descElement.textContent = event.description.substring(0, 100) + '...';
+                                  descElement.parentElement.querySelector('.show-more-btn').style.display = 'inline';
+                                  descElement.parentElement.querySelector('.show-less-btn').style.display = 'none';
+                                }
+                              }}>Show less</span>
+                            </>
+                          ) : event.description}
+                        </div>
+                      ) : '-'}
+                    </td>
+                    <td className="event-price">{event.price || 'Free'}</td>
+                    <td className="event-age-limit">{event.ageLimit || 'All ages'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
-          <p>No events available for this venue</p>
+          <p className="no-events">No events available for this venue</p>
         )}
       </div>
 
