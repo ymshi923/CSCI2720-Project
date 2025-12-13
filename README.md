@@ -78,8 +78,35 @@ npm run dev
 
 Vite will print the local URL (commonly `http://localhost:5173`). The frontend calls the backend API; ensure backend is running and `frontend/src/services/api.jsx` points to the correct API base URL (or use a proxy / environment variable).
 
-## API Overview (common endpoints)
+## MONGODB SETUP (Step-by-Step)
 
+1. Install MongoDB Community Edition
+- Download: https://www.mongodb.com/try/download/community
+- Version: 8.0.13 or later
+- Install with default settings
+- Start MongoDB service (automatic on most systems)
+
+2. Install MongoDB Compass
+- Download: https://www.mongodb.com/try/download/compass
+- Install application
+- Open MongoDB Compass
+
+3. Create Database in Compass
+
+- Click "Connect" (default localhost:27017)
+
+  - Right-click in sidebar → "Create Database"
+  - Database name: `cultural_venues_db`
+  - Collection name: `users`
+  - Click "Create Database"
+
+- Auto-create other collections:
+  - The backend will auto-create `locations`, `events`, `comments`, `favorites` collections on first startup
+  - Or manually create them in Compass
+## Browser
+- Open: http://localhost:5173
+- Login with: testuser / testuser123
+## API Overview (common endpoints)
 - `GET /api/health` — health check
 - `POST /api/auth/register` — register user
 - `POST /api/auth/login` — login (returns JWT)
