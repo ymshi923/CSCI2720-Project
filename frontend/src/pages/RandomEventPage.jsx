@@ -12,8 +12,6 @@ function RandomEventPage() {
       const response = await eventsAPI.getRandom();
       const newEvent = response.data;
       setEvent(newEvent);
-      
-      setHistory(prev => [newEvent, ...prev.slice(0, 4)]);
     } catch (error) {
       console.error('Failed to fetch random event:', error);
     } finally {
