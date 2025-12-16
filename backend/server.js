@@ -26,6 +26,7 @@ app.use('/api/locations', require('./routes/locations'));
 app.use('/api/events', require('./routes/events'));
 app.use('/api/comments', require('./routes/comments'));
 app.use('/api/favorites', require('./routes/favorites'));
+app.use('/api/likes', require('./routes/likes'));
 app.use('/api/admin', require('./routes/admin'));
 
 // Health check endpoint
