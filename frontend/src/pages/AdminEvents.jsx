@@ -4,12 +4,14 @@ import '../styles/pages.css';
 
 function AdminEvents() {
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     date: '',
@@ -18,7 +20,8 @@ function AdminEvents() {
     locationId: '',
     price: '',
     ageLimit: '',
-    url: ''
+    url: '',
+    eventId: ''
   });
   const [editForm, setEditForm] = useState({
     title: '',
@@ -28,7 +31,8 @@ function AdminEvents() {
     locationId: '',
     price: '',
     ageLimit: '',
-    url: ''
+    url: '',
+    eventId: ''
   });
 
   useEffect(() => {
@@ -36,11 +40,24 @@ function AdminEvents() {
     fetchLocations();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setFilteredEvents(events);
+    } else {
+      const filtered = events.filter(event => {
+        const venueName = getLocationName(event).toLowerCase();
+        return venueName.includes(searchTerm.toLowerCase());
+      });
+      setFilteredEvents(filtered);
+    }
+  }, [searchTerm, events]);
+
   const fetchEvents = async () => {
     try {
       setLoading(true);
       const response = await adminAPI.events.getAll();
       setEvents(response.data);
+      setFilteredEvents(response.data);
     } catch (err) {
       setError('Failed to load events');
       console.error(err);
@@ -76,8 +93,8 @@ function AdminEvents() {
 
   const handleCreateEvent = async (e) => {
     e.preventDefault();
-    if (!formData.title || !formData.date || !formData.locationId) {
-      setError('Title, date, and location are required');
+    if (!formData.title || !formData.date || !formData.locationId || !formData.eventId) {
+      setError('Title, date, location and Event ID are required');
       return;
     }
 
@@ -90,7 +107,8 @@ function AdminEvents() {
         locationId: formData.locationId,
         price: formData.price || 'Free',
         ageLimit: formData.ageLimit || 'All ages',
-        url: formData.url || ''
+        url: formData.url || '',
+        eventId: formData.eventId
       });
       setSuccess('Event created successfully');
       setFormData({
@@ -101,7 +119,8 @@ function AdminEvents() {
         locationId: '',
         price: '',
         ageLimit: '',
-        url: ''
+        url: '',
+        eventId: ''
       });
       setShowForm(false);
       fetchEvents();
@@ -121,7 +140,8 @@ function AdminEvents() {
       locationId: event.locationId?._id || event.locationId || '',
       price: event.price || '',
       ageLimit: event.ageLimit || '',
-      url: event.url || ''
+      url: event.url || '',
+      eventId: event.eventId || ''
     });
   };
 
@@ -138,7 +158,8 @@ function AdminEvents() {
         locationId: editForm.locationId,
         price: editForm.price || 'Free',
         ageLimit: editForm.ageLimit || 'All ages',
-        url: editForm.url || ''
+        url: editForm.url || '',
+        eventId: editForm.eventId
       });
       setSuccess('Event updated successfully');
       setEditingEvent(null);
@@ -150,7 +171,8 @@ function AdminEvents() {
         locationId: '',
         price: '',
         ageLimit: '',
-        url: ''
+        url: '',
+        eventId: ''
       });
       fetchEvents();
       setTimeout(() => setSuccess(''), 3000);
@@ -186,6 +208,23 @@ function AdminEvents() {
     <div className="page">
       <h1>Manage Events</h1>
 
+      <div className="search-container" style={{ marginBottom: '20px' }}>
+        <input
+          type="text"
+          placeholder="Search by venue..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            padding: '8px 12px',
+            width: '300px',
+            border: '1px solid #d8eee9ff',
+            borderRadius: '4px',
+            fontSize: '14px',
+            backgroundColor: '#eaf4f4ff' 
+          }}
+        />
+      </div>
+
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
 
@@ -196,6 +235,18 @@ function AdminEvents() {
       ) : showForm ? (
         <form className="admin-form" onSubmit={handleCreateEvent}>
           <h2>Add New Event</h2>
+
+          <div className="form-group">
+            <label>Event ID:</label>
+            <input
+              type="text"
+              name="eventId"
+              value={formData.eventId}
+              onChange={handleInputChange}
+              placeholder="Enter event ID"
+              required
+            />
+          </div>
 
           <div className="form-group">
             <label>Event Title:</label>
@@ -294,7 +345,7 @@ function AdminEvents() {
 
           <div className="form-buttons">
             <button type="submit" className="btn-primary">Save Event</button>
-            <button type="button" className="btn-cancel" onClick={() => setShowForm(false)}>Cancel</button>
+            <button type="button" className="btn-delete" style={{height: '30px'}}onClick={() => setShowForm(false)}>Cancel</button>
           </div>
         </form>
       ) : null}
@@ -302,6 +353,17 @@ function AdminEvents() {
       {editingEvent && (
         <form className="admin-form" onSubmit={handleUpdateEvent}>
           <h2>Edit Event</h2>
+
+          <div className="form-group">
+            <label>Event ID:</label>
+            <input
+              type="text"
+              name="eventId"
+              value={editForm.eventId}
+              onChange={handleEditInputChange}
+              required
+            />
+          </div>
 
           <div className="form-group">
             <label>Event Title:</label>
@@ -407,7 +469,8 @@ function AdminEvents() {
                   locationId: '',
                   price: '',
                   ageLimit: '',
-                  url: ''
+                  url: '',
+                  eventId: ''
                 });
               }}
             >
@@ -418,27 +481,29 @@ function AdminEvents() {
       )}
 
       <div className="admin-table-container">
-        <h2>All Events ({events.length})</h2>
-        {events.length === 0 ? (
+        <h2>All Events ({filteredEvents.length})</h2>
+        {filteredEvents.length === 0 ? (
           <p>No events found</p>
         ) : (
           <table className="admin-table">
             <thead>
               <tr>
+                <th>Event ID</th>
+                <th>Venue</th>
                 <th>Title</th>
                 <th>Date</th>
-                <th>Venue</th>
                 <th>Presenter</th>
                 <th>Price</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {events.map(event => (
+              {filteredEvents.map(event => (
                 <tr key={event._id}>
+                  <td>{event.eventId || '-'}</td>
+                  <td>{getLocationName(event)}</td>
                   <td>{event.title}</td>
                   <td>{event.date}</td>
-                  <td>{getLocationName(event)}</td>
                   <td>{event.presenter}</td>
                   <td>{event.price || 'Free'}</td>
                   <td>
