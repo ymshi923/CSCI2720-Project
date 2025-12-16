@@ -4,11 +4,13 @@ import '../styles/pages.css';
 
 function AdminLocations() {
   const [locations, setLocations] = useState([]);
+  const [filteredLocations, setFilteredLocations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingLocation, setEditingLocation] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     venueId: '',
     name: '',
@@ -26,11 +28,23 @@ function AdminLocations() {
     fetchLocations();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setFilteredLocations(locations);
+    } else {
+      const filtered = locations.filter(location =>
+        location.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredLocations(filtered);
+    }
+  }, [searchTerm, locations]);
+
   const fetchLocations = async () => {
     try {
       setLoading(true);
       const response = await adminAPI.locations.getAll();
       setLocations(response.data);
+      setFilteredLocations(response.data);
     } catch (err) {
       setError('Failed to load locations');
       console.error(err);
@@ -122,6 +136,23 @@ function AdminLocations() {
     <div className="page">
       <h1>Manage Locations</h1>
 
+      <div className="search-container" style={{ marginBottom: '20px' }}>
+        <input
+          type="text"
+          placeholder="Search by venue name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            padding: '8px 12px',
+            width: '300px',
+            border: '1px solid #d8eee9ff',
+            borderRadius: '4px',
+            fontSize: '14px',
+            backgroundColor: '#eaf4f4ff' 
+          }}
+        />
+      </div>
+
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
 
@@ -185,7 +216,7 @@ function AdminLocations() {
 
           <div className="form-buttons">
             <button type="submit" className="btn-primary">Create Location</button>
-            <button type="button" className="btn-cancel" onClick={() => setShowForm(false)}>Cancel</button>
+            <button type="button" className="btn-delete" style={{height: '30px'}} onClick={() => setShowForm(false)}>Cancel</button>
           </div>
         </form>
       )}
@@ -244,7 +275,8 @@ function AdminLocations() {
             <button type="submit" className="btn-primary">Save Changes</button>
             <button
               type="button"
-              className="btn-cancel"
+              className="btn-delete"
+              style={{height: '30px'}}
               onClick={() => {
                 setEditingLocation(null);
                 setEditForm({ venueId: '', name: '', latitude: '', longitude: '' });
@@ -257,8 +289,8 @@ function AdminLocations() {
       )}
 
       <div className="admin-table-container">
-        <h2>All Locations ({locations.length})</h2>
-        {locations.length === 0 ? (
+        <h2>All Locations ({filteredLocations.length})</h2>
+        {filteredLocations.length === 0 ? (
           <p>No locations found</p>
         ) : (
           <table className="admin-table">
@@ -272,7 +304,7 @@ function AdminLocations() {
               </tr>
             </thead>
             <tbody>
-              {locations.map(location => (
+              {filteredLocations.map(location => (
                 <tr key={location._id}>
                   <td>{location.venueId}</td>
                   <td>{location.name}</td>
