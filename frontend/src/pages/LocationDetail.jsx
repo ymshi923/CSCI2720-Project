@@ -23,6 +23,7 @@ function LocationDetail() {
   const [error, setError] = useState('');
   const [isFavorited, setIsFavorited] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
 
   useEffect(() => {
     fetchLocationDetails();
@@ -68,6 +69,13 @@ function LocationDetail() {
     } finally {
       setFavoriteLoading(false);
     }
+  };
+
+  const toggleDescription = (eventId) => {
+    setExpandedDescriptions(prev => ({
+      ...prev,
+      [eventId]: !prev[eventId]
+    }));
   };
 
   if (loading) return <div className="loading">Loading location details...</div>;
@@ -136,7 +144,7 @@ function LocationDetail() {
         </div>
       </div>
 
-      <div className="events-table-container">
+      <div className="table-container">
         <h2>🎭 Events at {location.name}</h2>
         {events.length > 0 ? (
           <div className="table-responsive">
@@ -152,29 +160,38 @@ function LocationDetail() {
                 </tr>
               </thead>
               <tbody>
-                {events.map(event => (
-                  <tr key={event._id} className="event-row">
-                    <td className="event-title">{event.title}</td>
-                    <td className="event-date">{event.date}</td>
-                    <td className="event-presenter">{event.presenter || '-'}</td>
-                    <td className="event-description">
-                      {event.description ? (
-                        <div className="description-container">
-                          {event.description.length > 100 ? (
-                            <>
-                              {event.description.substring(0, 100)}...
-                              <span className="show-more-btn" onClick={() => {
-                                const descElement = document.querySelector(`#desc-${event._id}`);}}>
-                              </span>
-                            </>
-                          ) : event.description}
-                        </div>
-                      ) : '-'}
-                    </td>
-                    <td className="event-price">{event.price || 'Free'}</td>
-                    <td className="event-age-limit">{event.ageLimit || 'All ages'}</td>
-                  </tr>
-                ))}
+                {events.map(event => {
+                  const isExpanded = expandedDescriptions[event._id];
+                  const shouldTruncate = event.description && event.description.length > 100;
+                  const displayText = shouldTruncate && !isExpanded 
+                    ? `${event.description.substring(0, 100)}...`
+                    : event.description;
+                  
+                  return (
+                    <tr key={event._id} className="event-row">
+                      <td className="event-title">{event.title}</td>
+                      <td className="event-date">{event.date}</td>
+                      <td className="event-presenter">{event.presenter || '-'}</td>
+                      <td className="event-description">
+                        {event.description ? (
+                          <div className="description-container">
+                            {displayText}
+                            {shouldTruncate && (
+                              <button 
+                                style = {{height: '25px', backgroundColor: '#eaf0f8ff', border: 'none', marginLeft: '4px'}}
+                                onClick={() => toggleDescription(event._id)}
+                              >
+                                {isExpanded ? 'Show Less' : 'Show More'}
+                              </button>
+                            )}
+                          </div>
+                        ) : '-'}
+                      </td>
+                      <td className="event-price">{event.price || 'Free'}</td>
+                      <td className="event-age-limit">{event.ageLimit || 'All ages'}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -189,5 +206,3 @@ function LocationDetail() {
 }
 
 export default LocationDetail;
-
-
