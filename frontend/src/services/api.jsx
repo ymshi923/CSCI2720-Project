@@ -54,6 +54,13 @@ export const eventsAPI = {
   delete: (id) => api.delete(`/events/${id}`)
 };
 
+//Likes endpoints
+export const likesAPI = {
+  check: (locationId) => api.get(`/locations/${locationId}/like-status`),
+  like: (locationId) => api.post(`/locations/${locationId}/like`),
+  unlike: (locationId) => api.post(`/locations/${locationId}/unlike`)
+};
+
 // Comments endpoints
 export const commentsAPI = {
   getByLocation: (locationId) => api.get(`/comments/location/${locationId}`),
