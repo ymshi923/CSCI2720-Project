@@ -4,19 +4,23 @@ import '../styles/pages.css';
 
 function AdminUsers() {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     username: '',
     password: '',
+    email: '',
     role: 'user'
   });
   const [editForm, setEditForm] = useState({
     username: '',
     password: '',
+    email: '',
     role: 'user'
   });
 
@@ -24,11 +28,23 @@ function AdminUsers() {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setFilteredUsers(users);
+    } else {
+      const filtered = users.filter(user =>
+        user.username.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [searchTerm, users]);
+
   const fetchUsers = async () => {
     try {
       setLoading(true);
       const response = await adminAPI.users.getAll();
       setUsers(response.data);
+      setFilteredUsers(response.data);
     } catch (err) {
       setError('Failed to load users');
       console.error(err);
@@ -42,7 +58,7 @@ function AdminUsers() {
     try {
       await adminAPI.users.create(formData);
       setSuccess('User created successfully');
-      setFormData({ username: '', password: '', role: 'user' });
+      setFormData({ username: '', password: '', email: '', role: 'user' });
       setShowForm(false);
       fetchUsers();
       setTimeout(() => setSuccess(''), 3000);
@@ -68,6 +84,7 @@ function AdminUsers() {
     setEditingUser(user);
     setEditForm({
       username: user.username,
+      email: user.email || '',
       password: '',
       role: user.role
     });
@@ -79,6 +96,7 @@ function AdminUsers() {
 
     const payload = {
       username: editForm.username,
+      email: editForm.email,
       role: editForm.role
     };
     if (editForm.password) {
@@ -89,7 +107,7 @@ function AdminUsers() {
       await adminAPI.users.update(editingUser._id, payload);
       setSuccess('User updated successfully');
       setEditingUser(null);
-      setEditForm({ username: '', password: '', role: 'user' });
+      setEditForm({ username: '', password: '', email: '', role: 'user' });
       fetchUsers();
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
@@ -102,6 +120,23 @@ function AdminUsers() {
   return (
     <div className="page">
       <h1>👥 User Management</h1>
+
+      <div className="search-container" style={{ marginBottom: '20px'}}>
+        <input
+          type="text"
+          placeholder="Search by username..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            padding: '8px 12px',
+            width: '300px',
+            border: '1px solid #d8eee9ff',
+            borderRadius: '4px',
+            fontSize: '14px',
+            backgroundColor: '#eaf4f4ff' 
+          }}
+        />
+      </div>
 
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
@@ -122,6 +157,14 @@ function AdminUsers() {
               value={formData.username}
               onChange={(e) => setFormData({ ...formData, username: e.target.value })}
               required
+            />
+          </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
           <div className="form-group">
@@ -160,6 +203,14 @@ function AdminUsers() {
             />
           </div>
           <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              value={editForm.email}
+              onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+            />
+          </div>
+          <div className="form-group">
             <label>New Password (leave blank to keep current)</label>
             <input
               type="password"
@@ -179,13 +230,13 @@ function AdminUsers() {
             </select>
           </div>
           <div className="form-actions">
-            <button type="submit" className="btn-secondary" style= {{height: '25px', width: '150px'}}>Save Changes</button>
+            <button type="submit" className="btn-secondary" style={{height: '22px', width: '150px', marginRight: '4px'}}>Save Changes</button>
             <button
               type="button"
               className="btn-delete"
               onClick={() => {
                 setEditingUser(null);
-                setEditForm({ username: '', password: '', role: 'user' });
+                setEditForm({ username: '', password: '', email: '', role: 'user' });
               }}
             >
               Cancel
@@ -194,27 +245,28 @@ function AdminUsers() {
         </form>
       )}
 
-      <div className="users-table">
+      <div className="users-table" style={{textAlign: 'center'}}>
         <table>
           <thead>
             <tr>
               <th>Username</th>
+              <th>Email</th>
               <th>Role</th>
               <th>Created</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
+            {filteredUsers.map(user => (
               <tr key={user._id}>
                 <td>{user.username}</td>
+                <td>{user.email || '-'}</td>
                 <td>{user.role}</td>
                 <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                 <td>
                   <button
                     onClick={() => handleEditUser(user)}
                     className="btn-secondary"
-                    style={{ marginRight: '8px' }}
                   >
                     Edit
                   </button>
@@ -235,4 +287,3 @@ function AdminUsers() {
 }
 
 export default AdminUsers;
-
