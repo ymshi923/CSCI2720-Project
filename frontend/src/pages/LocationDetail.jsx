@@ -119,7 +119,7 @@ function LocationDetail() {
             keyboard={false}
             zoomControl={false}
             style={{
-              height: '300px',
+              height: '200px',
               width: '100%',
               borderRadius: '8px',
               overflow: 'hidden'
@@ -164,21 +164,8 @@ function LocationDetail() {
                             <>
                               {event.description.substring(0, 100)}...
                               <span className="show-more-btn" onClick={() => {
-                                const descElement = document.querySelector(`#desc-${event._id}`);
-                                if (descElement) {
-                                  descElement.textContent = event.description;
-                                  descElement.parentElement.querySelector('.show-more-btn').style.display = 'none';
-                                  descElement.parentElement.querySelector('.show-less-btn').style.display = 'inline';
-                                }
-                              }}>Show more</span>
-                              <span className="show-less-btn" style={{display: 'none'}} onClick={() => {
-                                const descElement = document.querySelector(`#desc-${event._id}`);
-                                if (descElement) {
-                                  descElement.textContent = event.description.substring(0, 100) + '...';
-                                  descElement.parentElement.querySelector('.show-more-btn').style.display = 'inline';
-                                  descElement.parentElement.querySelector('.show-less-btn').style.display = 'none';
-                                }
-                              }}>Show less</span>
+                                const descElement = document.querySelector(`#desc-${event._id}`);}}>
+                              </span>
                             </>
                           ) : event.description}
                         </div>
@@ -202,3 +189,5 @@ function LocationDetail() {
 }
 
 export default LocationDetail;
+
+
