@@ -83,7 +83,7 @@ function FilterPanel({ locations, onFilter, userLat, userLng, onUserLocationChan
       <button onClick={() => {
         setKeyword('');
         setDistance(30);
-      }} className="btn-secondary" style={{width: '180px'}}>
+      }} className="btn-secondary" style={{width: '150px'}}>
         Reset Filters
       </button>
     </aside>
@@ -91,3 +91,4 @@ function FilterPanel({ locations, onFilter, userLat, userLng, onUserLocationChan
 }
 
 export default FilterPanel;
+
