@@ -297,19 +297,9 @@ html[data-theme="dark"] .data-table tbody tr:hover {
   border-bottom: none;
 }
 
-
-html[data-theme="dark"] .events-table-container {
+html[data-theme="dark"] .table-container {
 background: #2a2a2a;
 box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-
-.events-table-container h2 {
-margin-bottom: 1.5rem;
-color: #333;
-}
-
-html[data-theme="dark"] .events-table-container h2 {
-color: #ddd;
 }
 
 .events-table {
@@ -475,6 +465,11 @@ max-width: 150px;
 
 .btn-favorite-table:hover {
   background-color: #e1e6e8;
+}
+
+html[data-theme="dark"] .btn-favorite-table {
+  background-color: #1a1919;
+  color: rgb(224, 217, 217);
 }
 /* Last updated */
 .last-updated {
@@ -1035,3 +1030,5 @@ html[data-theme="dark"] .users-table td {
     padding: 8px 10px;
   }
 }
+
+
