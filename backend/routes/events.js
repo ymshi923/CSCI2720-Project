@@ -6,7 +6,6 @@ const adminAuth = require('../middleware/adminAuth');
 
 const router = express.Router();
 
-// Get events for a location
 router.get('/location/:locationId', auth, async (req, res) => {
   try {
     const events = await Event.find({ locationId: req.params.locationId });
@@ -16,7 +15,6 @@ router.get('/location/:locationId', auth, async (req, res) => {
   }
 });
 
-// Random event picker
 router.get('/random/pick', auth, async (req, res) => {
   try {
     const count = await Event.countDocuments();
@@ -29,13 +27,12 @@ router.get('/random/pick', auth, async (req, res) => {
   }
 });
 
-// Admin: Create event
 router.post('/', auth, adminAuth, async (req, res) => {
   try {
-    const { locationId, title, date, description, presenter } = req.body;
+    const { locationId, title, date, description, presenter, eventId, price, ageLimit, url } = req.body;
     
-    if (!locationId || !title) {
-      return res.status(400).json({ error: 'Location and title required' });
+    if (!locationId || !title || !eventId) {
+      return res.status(400).json({ error: 'Location, title and eventId required' });
     }
     
     const event = new Event({
@@ -43,7 +40,11 @@ router.post('/', auth, adminAuth, async (req, res) => {
       title,
       date,
       description,
-      presenter
+      presenter,
+      eventId,
+      price: price || 'Free',
+      ageLimit: ageLimit || 'All ages',
+      url: url || ''
     });
     
     await event.save();
@@ -53,7 +54,6 @@ router.post('/', auth, adminAuth, async (req, res) => {
   }
 });
 
-// Admin: Update event
 router.put('/:id', auth, adminAuth, async (req, res) => {
   try {
     const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -66,7 +66,6 @@ router.put('/:id', auth, adminAuth, async (req, res) => {
   }
 });
 
-// Admin: Delete event
 router.delete('/:id', auth, adminAuth, async (req, res) => {
   try {
     const event = await Event.findByIdAndDelete(req.params.id);
