@@ -71,6 +71,30 @@
   color: #2b9b7a;
 }
 
+/*FILTER PANEL */
+html[data-theme="dark"] .filter-panel h3{
+  background: #2a2a2a;
+  color: #ddd;
+}
+html[data-theme="dark"] .filter-panel {
+  background: #2a2a2a;
+  color: #ddd;
+}
+
+html[data-theme="dark"] .filter-group label {
+  color: #ddd;
+}
+
+html[data-theme="dark"] .filter-group input {
+  background: #3a3a3a;
+  color: #f5f5f5;
+  border-color: #555;
+}
+
+html[data-theme="dark"] .distance-display {
+  color: #aaa;
+}
+
 /* LOCATION CARD */
 .location-card {
   padding: 20px;
