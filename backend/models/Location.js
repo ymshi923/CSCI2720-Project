@@ -43,6 +43,10 @@ const locationSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  favoriteCount: {
+    type: Number,
+    default: 0
+  },
   lastUpdated: {
     type: Date,
     default: Date.now
