@@ -268,6 +268,7 @@ html[data-theme="dark"] .data-table thead {
   font-weight: 600;
   color: #495057;
   border-bottom: 2px solid #dee2e6;
+   white-space: nowrap;
 }
 
 html[data-theme="dark"] .data-table th {
@@ -296,13 +297,6 @@ html[data-theme="dark"] .data-table tbody tr:hover {
   border-bottom: none;
 }
 
-.events-table-container {
-margin: 2rem 0;
-padding: 1.5rem;
-background: white;
-border-radius: 8px;
-box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
 
 html[data-theme="dark"] .events-table-container {
 background: #2a2a2a;
@@ -379,7 +373,6 @@ color: #f5f5f5;
 }
 
 .events-table .event-date {
-white-space: nowrap;
 color: #6c757d;
 }
 
@@ -388,28 +381,12 @@ color: #495057;
 }
 
 .events-table .event-description {
-max-width: 300px;
 color: #6c757d;
 line-height: 1.4;
 }
 
 .events-table .description-container {
 position: relative;
-}
-
-.events-table .show-more-btn,
-.events-table .show-less-btn {
-color: #007bff;
-cursor: pointer;
-font-size: 0.9rem;
-margin-left: 5px;
-text-decoration: underline;
-}
-
-.events-table .show-more-btn:hover,
-.events-table .show-less-btn:hover {
-color: #0056b3;
-text-decoration: none;
 }
 
 .events-table .event-price {
@@ -459,7 +436,7 @@ max-width: 150px;
 }
 
 .btn-view {
-  padding: 4px 12px;
+  padding: 4px 4px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -468,6 +445,7 @@ max-width: 150px;
   font-size: 12px;
   cursor: pointer;
   transition: background-color 0.3s;
+  white-space: nowrap;
 }
 
 .btn-view:hover {
@@ -480,15 +458,24 @@ max-width: 150px;
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 15px;
   cursor: pointer;
   transition: background-color 0.3s;
+   white-space: nowrap;
 }
 
 .btn-remove:hover {
   background-color: #c82333;
 }
+.btn-favorite-table {
+  background-color: #eef5f9;
+  border-radius: 4px;
+  border: none;
+}
 
+.btn-favorite-table:hover {
+  background-color: #e1e6e8;
+}
 /* Last updated */
 .last-updated {
   text-align: center;
@@ -612,7 +599,11 @@ html[data-theme="dark"] .location-info {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  height: 100%;
+  height : 100%
+}
+.table-responsive {
+  overflow-x: auto;
+  width: 100%;
 }
 
 html[data-theme="dark"] .map-container {
@@ -777,12 +768,10 @@ html[data-theme="dark"] .admin-card {
   width: 140px;
   min-width: 140px;
   max-width: 140px;
-  padding: 8px;
 }
 
 .users-table td:last-child .action-buttons {
   display: flex;
-  gap: 6px;
   justify-content: flex-start;
 }
 
@@ -853,12 +842,23 @@ button.btn-delete {
 button.btn-secondary {
   background-color: #a5d8e4;
   color: white;
-  margin-right: 8px;
   margin-bottom: 4px;
 }
 
+button.btn-secondary:hover {
+  background-color: #afd9e3;
+  color: white;
+  margin-bottom: 4px;
+}
+
+
 button.btn-delete {
   background-color: #8cace8;
+  color: white;
+}
+
+button.btn-delete:hover {
+  background-color: #98b5eb;
   color: white;
 }
 
@@ -895,6 +895,42 @@ html[data-theme="dark"] .admin-form {
   font-size: 1rem;
 }
 
+.admin-table th, .users-table th {
+  background-color:#f7f9fb;
+}
+
+.admin-table tr, .users-table tr {
+  background-color:#e9f3f2;
+}
+.admin-table tr:hover, .users-table tr:hover {
+  background-color:#f3f7f7;
+}
+html[data-theme="dark"] .admin-table-container, html[data-theme="dark"] .users-table-container {
+  background: #2a2a2a;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+html[data-theme="dark"] .admin-table, tml[data-theme="dark"] .users-table{
+  border-color: #444;
+}
+
+html[data-theme="dark"] .admin-table th, html[data-theme="dark"] .users-table th{
+  background-color: #3a3a3a;
+}
+
+html[data-theme="dark"] .admin-table tr, html[data-theme="dark"] .users-table tr {
+  background-color: #3a3a3a;
+  border-bottom-color: #555;
+}
+
+html[data-theme="dark"] .admin-table td, html[data-theme="dark"] .users-table td {
+  border-bottom-color: #444;
+  color: #ddd;
+}
+
+html[data-theme="dark"] .admin-table tbody tr:hover {
+  background-color: #3a3a3a;
+}
 .form-buttons {
   display: flex;
   gap: 12px;
@@ -999,4 +1035,3 @@ html[data-theme="dark"] .users-table td {
     padding: 8px 10px;
   }
 }
-
