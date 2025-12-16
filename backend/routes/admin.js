@@ -20,7 +20,7 @@ router.get('/users', auth, adminAuth, async (req, res) => {
 // Admin: Create user
 router.post('/users', auth, adminAuth, async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password, role, email } = req.body;
     
     if (!username || !password) {
       return res.status(400).json({ error: 'Username and password required' });
@@ -31,13 +31,14 @@ router.post('/users', auth, adminAuth, async (req, res) => {
       return res.status(400).json({ error: 'User already exists' });
     }
     
-    const user = new User({ username, password, role: role || 'user' });
+    const user = new User({ username, password, role: role || 'user', email: email || '' });
     await user.save();
     
     res.status(201).json({
       _id: user._id,
       username: user.username,
-      role: user.role
+      role: user.role,
+      email: user.email
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -47,7 +48,7 @@ router.post('/users', auth, adminAuth, async (req, res) => {
 // Admin: Update user
 router.put('/users/:id', auth, adminAuth, async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password, role, email } = req.body;
 
     const user = await User.findById(req.params.id).select('+password');
     if (!user) {
@@ -56,6 +57,7 @@ router.put('/users/:id', auth, adminAuth, async (req, res) => {
 
     if (username) user.username = username;
     if (typeof role === 'string') user.role = role;
+    if (email !== undefined) user.email = email;
     if (password) {
       user.password = password; // pre-save hook will hash
     }
@@ -162,10 +164,10 @@ router.get('/events', auth, adminAuth, async (req, res) => {
 // Admin: Create event
 router.post('/events', auth, adminAuth, async (req, res) => {
   try {
-    const { locationId, title, date, description, presenter, price, ageLimit, url } = req.body;
+    const { locationId, title, date, description, presenter, price, ageLimit, url, eventId } = req.body;
     
-    if (!locationId || !title || !date) {
-      return res.status(400).json({ error: 'Location, title and date are required' });
+    if (!locationId || !title || !date || !eventId) {
+      return res.status(400).json({ error: 'Location, title, date and eventId are required' });
     }
     
     // Check if location exists
@@ -182,7 +184,8 @@ router.post('/events', auth, adminAuth, async (req, res) => {
       presenter,
       price: price || 'Free',
       ageLimit: ageLimit || 'All ages',
-      url: url || ''
+      url: url || '',
+      eventId
     });
     
     await event.save();
