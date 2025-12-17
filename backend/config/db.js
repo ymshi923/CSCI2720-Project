@@ -228,12 +228,5 @@ const seedInitialData = async () => {
 
   // console.log(`\nFinal Venues check: ${finalVenues}`);
   // console.log(`Final Total Event: ${finalEvents}`);
-
-}
-
 module.exports = connectDB;
 
-}
-
-
-module.exports = connectDB;
