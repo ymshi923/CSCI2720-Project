@@ -53,7 +53,7 @@ const updateFile = async (url, file) => {
       await fs.writeFile(file, data);
       console.log(`Updated`);
     } else {
-      console.log(`Updated Already`);
+      // console.log(`Updated Already`);
     }
   } catch (e) {
     console.warn(`Cannot get new version`);
@@ -62,7 +62,7 @@ const updateFile = async (url, file) => {
 
 // Seed initial data
 const seedInitialData = async () => {
-  console.log('Starting import Event and Venues (keep 10 with event number > 3)')
+  console.log('Checking Event & Venues')
 
   await Promise.all([
     updateFile(URLS.venues, VENUES_FILE),
@@ -158,21 +158,54 @@ const seedInitialData = async () => {
 
   if (temp.length > 0) {
     await Event.insertMany(temp);
-    console.log(`Total: ${temp.length} events`);
+    // console.log(`Total: ${temp.length} events`);
   }
-
-  // choose top 10 location with event more than 3
-  const select10Loc = [...venueEventCounter.entries()]
+  // check event more than 3
+  const selectLoc = [...venueEventCounter.entries()]
     .filter(([_, count]) => count >= 3)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 11)
+    .slice(0, 10)
     .map(([venueId]) => venueId);
 
-  select10Loc.forEach((id, i) => {
-    const v = venueMap.get(id);
-  });
+  const selectedVenues = selectLoc.map(id => ({
+    venueId: id,
+    ...venueMap.get(id)
+  })).filter(Boolean);
 
-  const Location10 = select10Loc
+  const unique = [];
+  const latLon = new Set();
+
+  for (const venue of selectedVenues) {
+    const storeKey = `${venue.latitude}&${venue.longitude}`;
+
+    // check whether have the same lat lon and store in latLon for later checking
+    if (!latLon.has(storeKey)) {
+      latLon.add(storeKey);
+      unique.push(venue);
+      // check event number 
+      if (unique.length > 10) {
+        break;
+      }
+    }
+  }
+
+  let finalVenueIds = unique.map(v => v.venueId);
+  const checked = [...venueEventCounter.entries()]
+    .filter(([venueId, _]) => !selectLoc.includes(venueId))
+    .sort((a, b) => b[1] - a[1]);
+
+  for (const [venueId, count] of checked) {
+    if (finalVenueIds.length > 10) break;
+    // final checking
+    const venue = venueMap.get(venueId);
+    const storeKey = `${venue.latitude}&${venue.longitude}`;
+    if (!latLon.has(storeKey)) {
+      latLon.add(storeKey);
+      finalVenueIds.push(venueId);
+    }
+  }
+
+  const Location10 = finalVenueIds
     .map(id => locCache.get(id))
     .filter(Boolean);
 
@@ -193,9 +226,14 @@ const seedInitialData = async () => {
   const finalVenues = await Location.countDocuments();
   const finalEvents = await Event.countDocuments();
 
-  console.log(`\nFinal Venues check: ${finalVenues}`);
-  console.log(`Final Total: ${finalEvents}`);
+  // console.log(`\nFinal Venues check: ${finalVenues}`);
+  // console.log(`Final Total Event: ${finalEvents}`);
 
 }
+
+module.exports = connectDB;
+
+}
+
 
 module.exports = connectDB;
