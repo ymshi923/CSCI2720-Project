@@ -23,16 +23,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      const requestUrl = error.config?.url || '';
-      if (!requestUrl.includes('/auth/login') && !requestUrl.includes('/auth/register')) {
-        console.log('Session expired, clear local storage');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        
-        if (!window.location.pathname.includes('/login')) {
-          window.location.href = '/login';
-        }
-      }
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/';
     }
     return Promise.reject(error);
   }
@@ -59,6 +52,13 @@ export const eventsAPI = {
   create: (event) => api.post('/events', event),
   update: (id, event) => api.put(`/events/${id}`, event),
   delete: (id) => api.delete(`/events/${id}`)
+};
+
+//Likes endpoints
+export const likesAPI = {
+  check: (locationId) => api.get(`/locations/${locationId}/like-status`),
+  like: (locationId) => api.post(`/locations/${locationId}/like`),
+  unlike: (locationId) => api.post(`/locations/${locationId}/unlike`)
 };
 
 // Comments endpoints
@@ -100,4 +100,3 @@ export const adminAPI = {
 };
 
 export default api;
-
