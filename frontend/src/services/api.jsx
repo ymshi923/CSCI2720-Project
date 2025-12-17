@@ -23,9 +23,16 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/';
+      const requestUrl = error.config?.url || '';
+      if (!requestUrl.includes('/auth/login') && !requestUrl.includes('/auth/register')) {
+        console.log('Session expired, clear local storage');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+      }
     }
     return Promise.reject(error);
   }
@@ -100,3 +107,4 @@ export const adminAPI = {
 };
 
 export default api;
+
