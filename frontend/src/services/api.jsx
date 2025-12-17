@@ -9,7 +9,6 @@ const api = axios.create({
   }
 });
 
-// Add token to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -18,17 +17,14 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle response errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       const requestUrl = error.config?.url || '';
       if (!requestUrl.includes('/auth/login') && !requestUrl.includes('/auth/register')) {
-        console.log('Session expired, clear local storage');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        
         if (!window.location.pathname.includes('/login')) {
           window.location.href = '/login';
         }
@@ -38,21 +34,18 @@ api.interceptors.response.use(
   }
 );
 
-// Auth endpoints
 export const authAPI = {
   login: (username, password) => api.post('/auth/login', { username, password }),
   register: (username, password, email) => api.post('/auth/register', { username, password, email }),
   verify: () => api.get('/auth/verify')
 };
 
-// Location endpoints
 export const locationsAPI = {
   getAll: (sort = 'name', filters = {}) => api.get('/locations', { params: { sort, ...filters } }),
   getOne: (id) => api.get(`/locations/${id}`),
   search: (q) => api.get('/locations/search/query', { params: { q } })
 };
 
-// Events endpoints
 export const eventsAPI = {
   getByLocation: (locationId) => api.get(`/events/location/${locationId}`),
   getRandom: () => api.get('/events/random/pick'),
@@ -61,21 +54,18 @@ export const eventsAPI = {
   delete: (id) => api.delete(`/events/${id}`)
 };
 
-//Likes endpoints
 export const likesAPI = {
   check: (locationId) => api.get(`/locations/${locationId}/like-status`),
   like: (locationId) => api.post(`/locations/${locationId}/like`),
   unlike: (locationId) => api.post(`/locations/${locationId}/unlike`)
 };
 
-// Comments endpoints
 export const commentsAPI = {
   getByLocation: (locationId) => api.get(`/comments/location/${locationId}`),
   add: (locationId, text, rating) => api.post('/comments', { locationId, text, rating }),
   delete: (id) => api.delete(`/comments/${id}`)
 };
 
-// Favorites endpoints
 export const favoritesAPI = {
   getAll: () => api.get('/favorites'),
   add: (locationId) => api.post('/favorites', { locationId }),
@@ -83,7 +73,6 @@ export const favoritesAPI = {
   check: (locationId) => api.get(`/favorites/check/${locationId}`)
 };
 
-// Admin endpoints
 export const adminAPI = {
   users: {
     getAll: () => api.get('/admin/users'),
@@ -107,4 +96,5 @@ export const adminAPI = {
 };
 
 export default api;
+
 
