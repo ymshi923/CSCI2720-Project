@@ -306,7 +306,7 @@ html[data-theme="dark"] .comment-section p {
   font-weight: 500;
 }
 
-.filter-group input {
+.filter-group input, .filter-group select{
   width: 100%;
   padding: 10px 14px;
   border: 1.5px solid #e2e8f0;
@@ -314,6 +314,12 @@ html[data-theme="dark"] .comment-section p {
   font-size: 14px;
   transition: all 0.2s;
   box-sizing: border-box;
+}
+
+html[data-theme="dark"] .filter-group select {
+  color: #ccc;
+  background: #3a3a3a;
+  border: none;
 }
 
 .filter-group input:focus {
@@ -345,13 +351,12 @@ html[data-theme="dark"] .comment-section p {
 }
 
 .filter-panel .btn-secondary:hover {
-  background: #f1f5f9;
+  background-color: #c2d6ea;
+  color: #475569;
 }
 
 /* Distance Slider Styles */
-.distance-slider-container {
-  margin: 10px 0 15px 0;
-}
+
 
 .distance-slider {
   width: 100%;
@@ -359,7 +364,6 @@ html[data-theme="dark"] .comment-section p {
   border-radius: 4px;
   background: #e0e0e0;
   outline: none;
-  margin: 10px 0;
 }
 
 html[data-theme="dark"] .distance-slider {
@@ -424,3 +428,4 @@ html[data-theme="dark"] .distance-display {
     flex-wrap: wrap;
   }
 }
+
