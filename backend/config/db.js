@@ -144,6 +144,3 @@ const seedInitialData = async () => {
 module.exports = connectDB;
 
 
-module.exports = connectDB;
-
-
