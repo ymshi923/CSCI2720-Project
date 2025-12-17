@@ -27,7 +27,7 @@ const EVENTS_FILE = path.join(DATA_DIRECTORY, 'events.xml');
 const cleanString = (str) => (str || '').toString().trim() || 'N/A';
 
 const seedInitialData = async () => {
-  console.log('Starting import with coordinate deduplication...');
+  console.log('Starting import...');
 
   await Location.deleteMany({});
   await Event.deleteMany({});
@@ -63,7 +63,6 @@ const seedInitialData = async () => {
     if (v.$.id) {
       const lat = v.latitude ? parseFloat(v.latitude) : null;
       const lng = v.longitude ? parseFloat(v.longitude) : null;
-
       if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) continue;
 
       const coordKey = `${lat.toFixed(6)},${lng.toFixed(6)}`;
@@ -80,7 +79,7 @@ const seedInitialData = async () => {
 
   const locCache = new Map(); 
   const venueEventCounter = new Map();
-  const temp = [];
+  const tempEvents = [];
 
   const eventList = Array.isArray(eventsXml.events.event)
     ? eventsXml.events.event
@@ -89,7 +88,6 @@ const seedInitialData = async () => {
   for (const e of eventList) {
     const venueId = (e.venueid || '').trim();
     if (!venueId) continue;
-
     const venue = venueMap.get(venueId);
     if (!venue) continue;
 
@@ -107,7 +105,7 @@ const seedInitialData = async () => {
       locCache.set(venueId, loc._id);
     }
 
-    temp.push({
+    tempEvents.push({
       locationId: locCache.get(venueId),
       eventId: cleanString(e.$.id),
       title: cleanString(e.titlee),
@@ -120,30 +118,32 @@ const seedInitialData = async () => {
     });
   }
 
-  if (temp.length > 0) {
-    await Event.insertMany(temp);
+  if (tempEvents.length > 0) {
+    await Event.insertMany(tempEvents);
   }
 
-  const select10Loc = [...venueEventCounter.entries()]
-    .filter(([_, count]) => count >= 3)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 11)
-    .map(([venueId]) => venueId);
+  const allVenueIds = Array.from(locCache.keys());
+  const sortedVenueIds = allVenueIds.sort((a, b) => {
+    return (venueEventCounter.get(b) || 0) - (venueEventCounter.get(a) || 0);
+  });
 
-  const Location10 = select10Loc
-    .map(id => locCache.get(id))
-    .filter(Boolean);
+  const select10LocIds = sortedVenueIds.slice(0, 10);
+  const Location10MongoIds = select10LocIds.map(id => locCache.get(id));
 
-  await Location.deleteMany({ _id: { $nin: Location10 } });
-  await Event.deleteMany({ locationId: { $nin: Location10 } });
+  await Location.deleteMany({ _id: { $nin: Location10MongoIds } });
+  await Event.deleteMany({ locationId: { $nin: Location10MongoIds } });
 
-  for (const locId of Location10) {
+  for (const locId of Location10MongoIds) {
     const count = await Event.countDocuments({ locationId: locId });
     await Location.findByIdAndUpdate(locId, { eventCount: count });
   }
   
-  console.log('✓ Seed Finished (Deduplicated by Coordinates)');
+  console.log(`✓ Seed Finished. Venues: ${await Location.countDocuments()}`);
 }
 
 module.exports = connectDB;
+
+
+module.exports = connectDB;
+
 
