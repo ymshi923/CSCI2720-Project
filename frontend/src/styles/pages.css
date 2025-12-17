@@ -1031,4 +1031,85 @@ html[data-theme="dark"] .users-table td {
   }
 }
 
+.locations-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.locations-view {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 1024px) {
+  .locations-container {
+    flex-direction: column;
+  }
+  
+  .filter-panel {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+  
+  .data-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .data-table th,
+  .data-table td {
+    padding: 8px 6px;
+    font-size: 0.9rem;
+  }
+  
+  .view-controls {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  
+  .results-count {
+    margin-bottom: 10px;
+  }
+  
+  .data-table th:nth-child(6),
+  .data-table td:nth-child(6) {
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .data-table {
+    font-size: 0.8rem;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 6px 4px;
+  }
+  
+  .btn-view {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .btn-favorite-table {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .filter-group input,
+  .filter-group select {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+}
 
