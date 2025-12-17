@@ -462,25 +462,3 @@ html[data-theme="dark"] .distance-display {
   color: #ccc;
   background: #3a3a3a;
 }
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .navbar {
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-  
-  .navbar-menu {
-    margin-left: 0;
-    width: 100%;
-    gap: 15px;
-  }
-  
-  .navbar-brand {
-    width: 100%;
-  }
-  
-  .navbar-user {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-}
